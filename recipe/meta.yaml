@@ -11,7 +11,9 @@ source:
 
 build:
   number: 0
-  skip: True  # [py<37]
+  # 2023/8/23: On win64 `rust_compiler_rust-gnu` tries to create two artifacts with different hashes in the artifact's filename,
+  # and testing one of them fails but another succeeded.
+  skip: True  # [py<37 or (win and (rust_compiler == 'rust-gnu'))]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
@@ -19,10 +21,10 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('rust') }}
   host:
+    - pip
     - python
     - setuptools
     - setuptools-rust
-    - pip
     - wheel
   run:
     - python
