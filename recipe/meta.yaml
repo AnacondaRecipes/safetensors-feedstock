@@ -6,38 +6,47 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/safetensors-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 2dbd34554ed3b99435a0e84df077108f5334c8336b5ed9cb8b6b98f7b10da2f6
 
 build:
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  # 2023/8/23: On win64 `rust_compiler_rust-gnu` tries to create two artifacts with different hashes in the artifact's filename, and testing one of them fails but another succeeded.
+  skip: True  # [py<37 or (win and (rust_compiler == 'rust-gnu'))]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  missing_dso_whitelist:  # [s390x]
+    - '$RPATH/ld64.so.1'  # [s390x]
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('rust') }}
   host:
-    - python
-    - setuptools-rust
     - pip
+    - python
+    - setuptools
+    - setuptools-rust
+    - wheel
   run:
     - python
 
 test:
   imports:
     - safetensors
-  commands:
-    - pip check
   requires:
     - pip
+  commands:
+    - pip check
 
 about:
   home: https://github.com/huggingface/safetensors
+  dev_url: https://github.com/huggingface/safetensors
+  doc_url: https://huggingface.co/docs/safetensors/index
   summary: Fast and Safe Tensor serialization
+  description: |
+    Simple, safe way to store and distribute tensors.
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
 
 extra:
