@@ -27,6 +27,7 @@ requirements:
     - setuptools
     - setuptools-rust
     - wheel
+    - maturin 1.3.0
   run:
     - python
 
