@@ -28,12 +28,31 @@ requirements:
     - python
 
 test:
+  source_files:
+    # Excluded test modules:
+    # test_flax_comparison.py: Missing flax on defaults
+    # test_paddle_comparison.py: Missing paddle on defaults
+    # test_tf_comparison.py: Adding tensorflow causes pip check to fail
+    - bindings/python/tests/data
+    - bindings/python/tests/test_pt_comparison.py
+    - bindings/python/tests/test_pt_model.py
+    - bindings/python/tests/test_simple.py
   imports:
     - safetensors
   requires:
     - pip
+    - numpy
+    - h5py >= 3.7.0
+    - huggingface_hub >= 0.12.1
+    - setuptools-rust >= 1.5.2
+    - pytest >= 7.2.0
+    - pytest-benchmark >= 4.0.0
+    - hypothesis >= 6.70.2
+    - pytorch >= 1.10
   commands:
     - pip check
+    - cd bindings/python
+    - pytest tests
 
 about:
   home: https://github.com/huggingface/safetensors
