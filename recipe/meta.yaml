@@ -13,8 +13,6 @@ build:
   number: 0
   skip: True  # [py<37 or s390x]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  missing_dso_whitelist:  # [s390x]
-    - '$RPATH/ld64.so.1'  # [s390x]
 
 requirements:
   build:
