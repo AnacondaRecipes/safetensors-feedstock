@@ -34,6 +34,8 @@ requirements:
     - flax >= 0.6.3
 
 test:
+# Skip tests on ppc64le/python 3.11; missing pytorch.
+{% if not (ppc64le and py>310) %}
   source_files:
     # Excluded test modules:
     # test_flax_comparison.py: Missing flax on defaults
@@ -43,10 +45,12 @@ test:
     - bindings/python/tests/test_pt_comparison.py
     - bindings/python/tests/test_pt_model.py
     - bindings/python/tests/test_simple.py
+{% endif %}
   imports:
     - safetensors
   requires:
     - pip
+{% if not (ppc64le and py>310) %}
     - numpy
     - h5py >= 3.7.0
     - huggingface_hub >= 0.12.1
@@ -55,10 +59,11 @@ test:
     - pytest-benchmark >= 4.0.0
     - hypothesis >= 6.70.2
     - pytorch >= 1.10
+{% endif %}
   commands:
     - pip check
-    - cd bindings/python
-    - pytest tests
+    - cd bindings/python  # [not (ppc64le and py>310)]
+    - pytest tests  # [not (ppc64le and py>310)]
 
 about:
   home: https://github.com/huggingface/safetensors
