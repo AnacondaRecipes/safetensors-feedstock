@@ -25,11 +25,11 @@ requirements:
   run:
     - python
   run_constrained:
-    - numpy >= 1.21.6
-    - tensorflow >= 2.11
-    - jax >= 0.3.25
-    - jaxlib >= 0.3.25
-    - flax >= 0.6.3
+    - numpy >=1.21.6
+    - tensorflow >=2.11
+    - jax >=0.3.25
+    - jaxlib >=0.3.25
+    - flax >=0.6.3
 
 test:
   imports:
@@ -39,12 +39,12 @@ test:
 # Skip tests on ppc64le/python 3.11; missing pytorch.
 {% if not (ppc64le and py>310) %}
     - numpy
-    - h5py >= 3.7.0
-    - huggingface_hub >= 0.12.1
-    - setuptools-rust >= 1.5.2
-    - pytest >= 7.2.0
-    - hypothesis >= 6.70.2
-    - pytorch >= 1.10
+    - h5py >=3.7.0
+    - huggingface_hub >=0.12.1
+    - setuptools-rust >=1.5.2
+    - pytest >=7.2.0
+    - hypothesis >=6.70.2
+    - pytorch >=1.10
   source_files:
     - bindings/python/tests
 {% endif %}
