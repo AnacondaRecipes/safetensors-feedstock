@@ -30,6 +30,9 @@ requirements:
     - jax >=0.3.25
     - jaxlib >=0.3.25
     - flax >=0.6.3
+    - pytorch >=1.10
+    - mlx >=0.0.9
+    - paddlepaddle >=2.4.1
 
 test:
   imports:
