@@ -1,5 +1,5 @@
 {% set name = "safetensors" %}
-{% set version = "0.4.0" %}
+{% set version = "0.4.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,8 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: b985953c3cf11e942eac4317ef3db3da713e274109cf7cfb6076d877054f013e
-
+  sha256: acc85dcb09ec5e8aa787f588d7ad4d55c103f31e4ff060e17d92cc0e8b8cac73
 build:
   number: 0
   skip: True  # [py<38 or s390x]
@@ -26,11 +25,14 @@ requirements:
   run:
     - python
   run_constrained:
-    - numpy >= 1.21.6
-    - tensorflow >= 2.11
-    - jax >= 0.3.25
-    - jaxlib >= 0.3.25
-    - flax >= 0.6.3
+    - numpy >=1.21.6
+    - tensorflow >=2.11
+    - jax >=0.3.25
+    - jaxlib >=0.3.25
+    - flax >=0.6.3
+    - pytorch >=1.10
+    - mlx >=0.0.9
+    - paddlepaddle >=2.4.1
 
 test:
   imports:
@@ -40,13 +42,12 @@ test:
 # Skip tests on ppc64le/python 3.11; missing pytorch.
 {% if not (ppc64le and py>310) %}
     - numpy
-    - h5py >= 3.7.0
-    - huggingface_hub >= 0.12.1
-    - setuptools-rust >= 1.5.2
-    - pytest >= 7.2.0
-    - pytest-benchmark >= 4.0.0
-    - hypothesis >= 6.70.2
-    - pytorch >= 1.10
+    - h5py >=3.7.0
+    - huggingface_hub >=0.12.1
+    - setuptools-rust >=1.5.2
+    - pytest >=7.2.0
+    - hypothesis >=6.70.2
+    - pytorch >=1.10
   source_files:
     - bindings/python/tests
 {% endif %}
@@ -56,8 +57,9 @@ test:
     # test_flax_comparison.py: Missing flax on defaults
     # test_paddle_comparison.py: Missing paddlepaddle on defaults
     # test_tf_comparison.py: Adding tensorflow causes pip check to fail
+    # test_mlx_comparison.py: Adding mlx causing import test to fail
     - cd bindings/python  # [not (ppc64le and py>310)]
-    - pytest -v tests --ignore=tests/test_tf_comparison.py --ignore=tests/test_paddle_comparison.py --ignore=tests/test_flax_comparison.py  # [not (ppc64le and py>310)]
+    - pytest -v tests --ignore=tests/test_tf_comparison.py --ignore=tests/test_paddle_comparison.py --ignore=tests/test_flax_comparison.py --ignore=tests/test_mlx_comparison.py # [not (ppc64le and py>310)]
 
 about:
   home: https://github.com/huggingface/safetensors
