@@ -21,7 +21,6 @@ requirements:
   host:
     - pip
     - python
-    - wheel
     - maturin >=1.0,<2.0
   run:
     - python
