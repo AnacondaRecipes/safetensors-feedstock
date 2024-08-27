@@ -39,8 +39,6 @@ test:
     - safetensors
   requires:
     - pip
-# Skip tests on ppc64le/python 3.11; missing pytorch.
-{% if not (ppc64le and py>310) %}
     - numpy
     - h5py >=3.7.0
     - huggingface_hub >=0.12.1
@@ -50,7 +48,6 @@ test:
     - pytorch >=1.10
   source_files:
     - bindings/python/tests
-{% endif %}
   commands:
     - pip check
     # Excluded test modules:
