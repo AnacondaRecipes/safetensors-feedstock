@@ -1,5 +1,5 @@
 {% set name = "safetensors" %}
-{% set version = "0.4.4" %}
+{% set version = "0.4.5" %}
 
 package:
   name: {{ name|lower }}
@@ -7,11 +7,10 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 5fe3e9b705250d0172ed4e100a811543108653fb2b66b9e702a088ad03772a07
+  sha256: d73de19682deabb02524b3d5d1f8b3aaba94c72f1bbfc7911b9b9d5d391c0310
 build:
   number: 0
   skip: True  # [py<37]
-  skip: True  # [linux and s390x]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
@@ -26,7 +25,7 @@ requirements:
     - python
   run_constrained:
     - numpy >=1.21.6
-    - tensorflow >=2.11
+    - tensorflow >=2.11.0
     - jax >=0.3.25
     - jaxlib >=0.3.25
     - flax >=0.6.3
