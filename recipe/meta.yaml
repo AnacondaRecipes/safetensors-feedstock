@@ -13,12 +13,10 @@ build:
   number: 0
   skip: true  # [py<39]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  # missing_dso_whitelist:  # [linux]
-    # - $RPATH/ld64.so.1  # [linux]
 
 requirements:
   build:
-    # - {{ stdlib('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('rust') }}
   host:
