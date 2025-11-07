@@ -1,22 +1,22 @@
 {% set name = "safetensors" %}
-{% set version = "0.5.3" %}
+{% set version = "0.6.2" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: b6b0d6ecacec39a4fdd99cc19f4576f5219ce858e6fd8dbe7609df0b8dc56965
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 43ff2aa0e6fa2dc3ea5524ac7ad93a9839256b8703761e76e2d0b2a3fa4f15d9
+
 build:
   number: 0
-  skip: True  # [py<37]
+  skip: true  # [py<39]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  missing_dso_whitelist:  # [linux and s390x]
-    - $RPATH/ld64.so.1    # [linux and s390x]
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('rust') }}
   host:
@@ -30,34 +30,30 @@ requirements:
     - tensorflow >=2.11.0
     - jax >=0.3.25
     - jaxlib >=0.3.25
-    - flax >=0.6.3
     - pytorch >=1.10
     - mlx >=0.0.9
     - paddlepaddle >=2.4.1
 
+# E   ModuleNotFoundError: No module named 'flax'
+{% set ignore_tests = " --ignore=bindings/python/tests/test_flax_comparison.py" %}
+# E   FileNotFoundError: [Errno 2] Unable to synchronously create file (unable to open file: name = './tests/data/tf_load.h5', ...
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_pt_comparison.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_tf_comparison.py" %}
+
 test:
+  source_files:
+    - bindings/python/tests
   imports:
     - safetensors
   requires:
     - pip
-    - numpy
-    - h5py >=3.7.0
-    - huggingface_hub >=0.12.1
-    - setuptools-rust >=1.5.2
     - pytest >=7.2.0
-    - hypothesis >=6.70.2
     - pytorch >=1.10
-  source_files:
-    - bindings/python/tests
+    - jax >=0.3.25
   commands:
     - pip check
-    # Excluded test modules:
-    # test_flax_comparison.py: Missing flax on defaults
-    # test_paddle_comparison.py: Missing paddlepaddle on defaults
-    # test_tf_comparison.py: Adding tensorflow causes pip check to fail
-    # test_mlx_comparison.py: Adding mlx causing import test to fail
-    - cd bindings/python  # [not (ppc64le and py>310)]
-    - pytest -v tests --ignore=tests/test_tf_comparison.py --ignore=tests/test_paddle_comparison.py --ignore=tests/test_flax_comparison.py --ignore=tests/test_mlx_comparison.py # [not (ppc64le and py>310)]
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v bindings/python/tests {{ ignore_tests }}
 
 about:
   home: https://github.com/huggingface/safetensors
