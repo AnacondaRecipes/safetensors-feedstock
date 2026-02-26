@@ -1,8 +1,5 @@
 {% set name = "safetensors" %}
 {% set version = "0.7.0" %}
-{% set ignore_tests = " --ignore=bindings/python/tests/test_flax_comparison.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_pt_comparison.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_tf_comparison.py" %}
 
 package:
   name: {{ name|lower }}
@@ -31,15 +28,19 @@ requirements:
   run_constrained:
     - numpy >=1.21.6
     - tensorflow >=2.11.0
+    - flax >=0.6.3
     - jax >=0.3.25
     - jaxlib >=0.3.25
     - pytorch >=1.10
     - mlx >=0.0.9
     - paddlepaddle >=2.4.1
-    - flax >=0.6.3
 
 # E   ModuleNotFoundError: No module named 'flax'
+{% set ignore_tests = " --ignore=bindings/python/tests/test_flax_comparison.py" %}
 # E   FileNotFoundError: [Errno 2] Unable to synchronously create file (unable to open file: name = './tests/data/tf_load.h5', ...
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_pt_comparison.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_tf_comparison.py" %}
+
 test:
   source_files:
     - bindings/python/tests
