@@ -1,17 +1,22 @@
 {% set name = "safetensors" %}
-{% set version = "0.7.0" %}
+{% set version = "0.8.0" %}
+{% set ignore_tests = " --ignore=bindings/python/tests/test_flax_comparison.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_pt_comparison.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_tf_comparison.py" %}
 
+# E   ModuleNotFoundError: No module named 'flax'
+# E   FileNotFoundError: [Errno 2] Unable to synchronously create file (unable to open file: name = './tests/data/tf_load.h5', ...
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 07663963b67e8bd9f0b8ad15bb9163606cd27cc5a1b96235a50d8369803b96b0
+  sha256: fabaf3e0f18a6618d9b36560682562157f77c2b71fcffc7b432be2baed9d753d
 
 build:
-  number: 1
-  skip: true  # [py<39]
+  number: 0
+  skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
@@ -26,20 +31,15 @@ requirements:
   run:
     - python
   run_constrained:
-    - numpy >=1.21.6
+    - numpy >=1.24.6
     - tensorflow >=2.11.0
     - flax >=0.6.3
     - jax >=0.3.25
     - jaxlib >=0.3.25
-    - pytorch >=1.10
+    - pytorch >=2.4
     - mlx >=0.0.9
     - paddlepaddle >=2.4.1
-
-# E   ModuleNotFoundError: No module named 'flax'
-{% set ignore_tests = " --ignore=bindings/python/tests/test_flax_comparison.py" %}
-# E   FileNotFoundError: [Errno 2] Unable to synchronously create file (unable to open file: name = './tests/data/tf_load.h5', ...
-{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_pt_comparison.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=bindings/python/tests/test_tf_comparison.py" %}
+    - huggingface_hub >=1.4
 
 test:
   source_files:
