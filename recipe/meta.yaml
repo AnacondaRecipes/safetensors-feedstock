@@ -2,7 +2,7 @@
 {% set version = "0.8.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -10,7 +10,7 @@ source:
   sha256: fabaf3e0f18a6618d9b36560682562157f77c2b71fcffc7b432be2baed9d753d
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
@@ -51,7 +51,7 @@ test:
     - pip
     - pytest >=9.0
     - pytorch >=2.4
-    - jax >=0.3.25
+    - jax >=0.3.25  # [not win]
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
